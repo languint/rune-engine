@@ -6,7 +6,7 @@ pub fn print_bitboard(bitboard: &Bitboard) {
         for file in (0..8).rev() {
             let mask = 1u64 << (LAST_BIT - (rank * 8) - file);
             let char = if bitboard & mask != 0 { '1' } else { '0' };
-            print!("{char} ")
+            print!("{char} ");
         }
     }
     println!();

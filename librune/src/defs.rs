@@ -13,3 +13,5 @@ impl Sides {
     pub const BLACK: usize = 1;
     pub const BOTH: usize = 2;
 }
+
+pub type Square = u8;
