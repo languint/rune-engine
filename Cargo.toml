@@ -1,6 +1,6 @@
 [workspace]
 resolver = "3"
-members = ["rune-core"]
+members = ["librune"]
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }
