@@ -7,6 +7,7 @@ pub enum Pieces {
     Bishop,
     Knight,
     Pawn,
+    None,
 }
 
 impl TryFrom<usize> for Pieces {
