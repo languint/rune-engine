@@ -4,6 +4,7 @@ pub type Bitboard = u64;
 pub type Piece = usize;
 pub type Square = usize;
 pub type Side = usize;
+pub type CastlingRights = u8;
 
 pub struct NrOf;
 impl NrOf {
@@ -23,13 +24,32 @@ pub enum Sides {
     BOTH,
 }
 
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Castling;
 impl Castling {
-    pub const WK: u8 = 1;
-    pub const WQ: u8 = 2;
-    pub const BK: u8 = 4;
-    pub const BQ: u8 = 8;
-    pub const ALL: u8 = 15;
+    pub const WK: CastlingRights = 1;
+    pub const WQ: CastlingRights = 2;
+    pub const BK: CastlingRights = 4;
+    pub const BQ: CastlingRights = 8;
+    pub const ALL: CastlingRights = 15;
+    pub const NONE: CastlingRights = 0;
+}
+
+pub fn castling_rights_from_string(castling: String) -> CastlingRights {
+    let mut c = Castling::NONE;
+
+    for char in castling.chars() {
+        match char {
+            'k' => c |= Castling::BK,
+            'q' => c |= Castling::BQ,
+            'K' => c |= Castling::WK,
+            'Q' => c |= Castling::WQ,
+            '-' => (),
+            _ => {}
+        }
+    }
+
+    c
 }
 
 #[derive(Debug, Clone, Copy)]
