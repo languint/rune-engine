@@ -1,4 +1,4 @@
-pub type Bitboard = u64;
+use crate::defs::Bitboard;
 
 pub fn print_bitboard(bitboard: &Bitboard) {
     const LAST_BIT: u64 = 63;

@@ -1,4 +1,4 @@
 pub mod bitboard;
-pub mod pieces;
+pub mod piece;
 pub mod board;
 pub mod defs;
