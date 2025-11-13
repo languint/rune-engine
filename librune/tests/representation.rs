@@ -1,7 +1,10 @@
 #[cfg(test)]
 mod tests {
     use librune::{
-        board::defs::{ALL_RANKS, File, Rank, Square},
+        board::{
+            bitboard::Bitboard,
+            defs::{ALL_RANKS, File, Rank, Square},
+        },
         defs::NrOf,
     };
 
@@ -104,5 +107,39 @@ mod tests {
         assert_eq!(format!("{}", Square(27)), "d4");
         assert_eq!(format!("{}", Square(8)), "a2");
         assert_eq!(format!("{}", Square(55)), "h7");
+    }
+
+    #[test]
+    fn bitboard_basics() {
+        let mut bb = Bitboard::EMPTY;
+        let sq_e4 = Square(28);
+        let sq_g7 = Square(54);
+
+        assert!(!bb.is_set(sq_e4));
+        assert_eq!(bb.pop_count(), 0);
+
+        bb.set(sq_e4);
+        assert!(bb.is_set(sq_e4));
+        assert_eq!(bb.pop_count(), 1);
+
+        bb.set(sq_g7);
+        assert!(bb.is_set(sq_g7));
+        assert_eq!(bb.pop_count(), 2);
+
+        bb.clear(sq_e4);
+        assert!(!bb.is_set(sq_e4));
+        assert_eq!(bb.pop_count(), 1);
+
+        bb.flip(sq_e4);
+        assert!(bb.is_set(sq_e4));
+        assert_eq!(bb.pop_count(), 2);
+
+        bb.flip(sq_g7);
+        assert!(!bb.is_set(sq_g7));
+        assert_eq!(bb.pop_count(), 1);
+
+        // Test from_square
+        let single_bit_bb = Bitboard::from_square(sq_e4);
+        assert_eq!(single_bit_bb.0, 1u64 << 28);
     }
 }

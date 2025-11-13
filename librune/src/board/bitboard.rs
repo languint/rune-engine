@@ -1,5 +1,6 @@
 use crate::board::defs::Square;
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Bitboard(pub u64);
 impl Bitboard {
     pub const EMPTY: Bitboard = Bitboard(0);
