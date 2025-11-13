@@ -25,10 +25,14 @@ impl TryFrom<&char> for Rank {
     /// # Errors
     /// Returns `Err` if the rank couldn't be parsed.
     fn try_from(value: &char) -> Result<Self, Self::Error> {
-        if let Some(digit) = value.to_digit(10) {
-            if (1..=8).contains(&digit) {
-                return Ok(Rank(digit as u8 - 1));
-            }
+        if let Some(digit) = value.to_digit(10)
+            && (1..=8).contains(&digit)
+        {
+            return Ok(Rank(
+                u8::try_from(digit)
+                    .map_err(|e| format!("Failed to cast `{digit}` as a u8: {e}!"))?
+                    - 1,
+            ));
         }
         Err(format!("Cannot parse `{value}` as a rank!"))
     }
@@ -174,7 +178,7 @@ impl Square {
     /// Create a [`Square`] from `file` and `rank` coordinates
     #[inline]
     #[must_use]
-    pub fn from_coords(file: File, rank: Rank) -> Self {
+    pub fn from_coords(file: &File, rank: &Rank) -> Self {
         let index = (rank.0 << 3) | file.as_u8();
         Square(index)
     }

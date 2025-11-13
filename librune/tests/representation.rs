@@ -92,7 +92,7 @@ mod tests {
     fn square_from_coords() {
         let file_d = File::D;
         let rank_4 = Rank(3);
-        let square = Square::from_coords(file_d, rank_4);
+        let square = Square::from_coords(&file_d, &rank_4);
 
         assert_eq!(u8::from(square), 27);
     }
