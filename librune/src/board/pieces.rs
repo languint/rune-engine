@@ -1,4 +1,5 @@
 /// The chess pieces
+#[derive(Debug, PartialEq, Eq)]
 #[repr(u8)]
 pub enum Pieces {
     Pawn,
@@ -8,6 +9,15 @@ pub enum Pieces {
     Queen,
     King,
 }
+
+pub const ALL_PIECES: [Pieces; 6] = [
+    Pieces::Pawn,
+    Pieces::Knight,
+    Pieces::Bishop,
+    Pieces::Rook,
+    Pieces::Queen,
+    Pieces::King,
+];
 
 impl TryFrom<&char> for Pieces {
     type Error = String;
@@ -28,5 +38,14 @@ impl TryFrom<&char> for Pieces {
             'k' => Ok(Pieces::King),
             _ => Err(format!("Cannot parse `{value}` as a piece!")),
         }
+    }
+}
+
+impl Pieces {
+    #[inline]
+    #[must_use]
+    /// An alias to [`Pieces::try_from`] with &char, maps `Err` to `None`
+    pub fn match_char(c: &char) -> Option<Pieces> {
+        Self::try_from(c).ok()
     }
 }

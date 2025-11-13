@@ -182,6 +182,14 @@ impl Square {
         let index = (rank.0 << 3) | file.as_u8();
         Square(index)
     }
+
+    /// Create a [`Square`] from `file` and `rank` coordinates
+    #[inline]
+    #[must_use]
+    pub fn from_coords_u8(file: u8, rank: u8) -> Self {
+        let index = (rank << 3) | file;
+        Square(index)
+    }
 }
 
 impl fmt::Display for Square {
@@ -192,3 +200,5 @@ impl fmt::Display for Square {
         write!(f, "{file}{rank}")
     }
 }
+
+pub const STARTING_FEN: &str = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w kqKQ - 0 1";

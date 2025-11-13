@@ -1,3 +1,5 @@
+use std::ops;
+
 use crate::board::defs::Square;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -42,5 +44,21 @@ impl Bitboard {
     #[must_use]
     pub fn pop_count(self) -> u32 {
         self.0.count_ones()
+    }
+}
+
+impl ops::BitAnd for Bitboard {
+    type Output = Self;
+    #[inline]
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Bitboard(self.0 & rhs.0)
+    }
+}
+
+impl ops::BitOr for Bitboard {
+    type Output = Self;
+    #[inline]
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Bitboard(self.0 | rhs.0)
     }
 }
