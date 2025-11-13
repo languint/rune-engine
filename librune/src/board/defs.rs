@@ -5,6 +5,7 @@ pub struct Rank(pub u8);
 
 /// All [`Ranks`][`Rank`]
 pub const ALL_RANKS: [Rank; 8] = [
+    Rank(0),
     Rank(1),
     Rank(2),
     Rank(3),
@@ -12,7 +13,6 @@ pub const ALL_RANKS: [Rank; 8] = [
     Rank(5),
     Rank(6),
     Rank(7),
-    Rank(8),
 ];
 
 impl TryFrom<&char> for Rank {
@@ -25,17 +25,12 @@ impl TryFrom<&char> for Rank {
     /// # Errors
     /// Returns `Err` if the rank couldn't be parsed.
     fn try_from(value: &char) -> Result<Self, Self::Error> {
-        match value {
-            '1' => Ok(Rank(1)),
-            '2' => Ok(Rank(2)),
-            '3' => Ok(Rank(3)),
-            '4' => Ok(Rank(4)),
-            '5' => Ok(Rank(5)),
-            '6' => Ok(Rank(6)),
-            '7' => Ok(Rank(7)),
-            '8' => Ok(Rank(8)),
-            _ => Err(format!("Cannot parse `{value}` as a rank!")),
+        if let Some(digit) = value.to_digit(10) {
+            if (1..=8).contains(&digit) {
+                return Ok(Rank(digit as u8 - 1));
+            }
         }
+        Err(format!("Cannot parse `{value}` as a rank!"))
     }
 }
 
@@ -68,17 +63,14 @@ impl TryFrom<&char> for File {
     type Error = String;
 
     fn try_from(value: &char) -> Result<Self, Self::Error> {
-        match value.to_ascii_lowercase() {
-            'a' => Ok(File::A),
-            'b' => Ok(File::B),
-            'c' => Ok(File::C),
-            'd' => Ok(File::D),
-            'e' => Ok(File::E),
-            'f' => Ok(File::F),
-            'g' => Ok(File::G),
-            'h' => Ok(File::H),
-            _ => Err(format!("Cannot parse `{value}` as a file!")),
+        let lower = value.to_ascii_lowercase();
+
+        if ('a'..='h').contains(&lower) {
+            let index = lower as u8 - b'a';
+            return Ok(unsafe { std::mem::transmute::<u8, File>(index) });
         }
+
+        Err(format!("Cannot parse `{value}` as a file!"))
     }
 }
 
@@ -89,6 +81,7 @@ impl TryFrom<u8> for File {
         if value > 7 {
             return Err(format!("Cannot parse {value} as a file!"));
         }
+
         Ok(unsafe { std::mem::transmute::<u8, File>(value) })
     }
 }
@@ -125,29 +118,18 @@ impl File {
 }
 
 /// A chess square using little endian mappings.
-/// 
+///
 /// `0` -> `A1`
 /// `63` -> `H8`
-#[rustfmt::skip]
-#[repr(u8)]
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub enum Square {
-    A1, B1, C1, D1, E1, F1, G1, H1,
-    A2, B2, C2, D2, E2, F2, G2, H2,
-    A3, B3, C3, D3, E3, F3, G3, H3,
-    A4, B4, C4, D4, E4, F4, G4, H4,
-    A5, B5, C5, D5, E5, F5, G5, H5,
-    A6, B6, C6, D6, E6, F6, G6, H6,
-    A7, B7, C7, D7, E7, F7, G7, H7,
-    A8, B8, C8, D8, E8, F8, G8, H8,
-}
+pub struct Square(pub u8);
 
 /// All [`Squares`][`Square`]
 pub const ALL_SQUARES: [Square; 64] = {
-    let mut arr = [Square::A1; 64];
+    let mut arr = [Square(0); 64];
     let mut i: u8 = 0;
     while i < 64 {
-        arr[i as usize] = unsafe { std::mem::transmute::<u8, Square>(i) };
+        arr[i as usize] = Square(i);
         i += 1;
     }
     arr
@@ -164,35 +146,44 @@ impl TryFrom<u8> for Square {
             return Err(format!("Cannot parse `{value}` as a square!"));
         }
 
-        unsafe { Ok(std::mem::transmute::<u8, Square>(value)) }
+        Ok(Square(value))
     }
 }
 
 impl From<Square> for u8 {
     fn from(sq: Square) -> Self {
-        sq as u8
+        sq.0
     }
 }
 
 impl Square {
-    /// Get the [`File`] associated with this [`Square`]
+    /// Get the [`File`] associated with this Square
     #[inline]
     #[must_use]
     pub fn file(self) -> File {
-        unsafe { File::from_u8((self as u8) & 7) }
+        unsafe { File::from_u8(self.0 & 7) }
     }
 
-    /// Get the [`Rank`] associated with this [`Square`]
+    /// Get the [`Rank`] associated with this Square
     #[inline]
     #[must_use]
     pub fn rank(self) -> Rank {
-        Rank(self as u8 >> 3)
+        Rank(self.0 >> 3)
+    }
+
+    /// Create a [`Square`] from `file` and `rank` coordinates
+    #[inline]
+    #[must_use]
+    pub fn from_coords(file: File, rank: Rank) -> Self {
+        let index = (rank.0 << 3) | file.as_u8();
+        Square(index)
     }
 }
 
 impl fmt::Display for Square {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let file = (b'a' + u8::from(self.file())) as char;
+
         let rank = (b'1' + self.rank().0) as char;
         write!(f, "{file}{rank}")
     }
