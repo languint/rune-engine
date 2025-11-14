@@ -92,21 +92,25 @@ impl Square {
     };
 
     #[inline]
+    #[must_use]
     pub const fn rank(self) -> u8 {
         self.0 / 8
     }
 
     #[inline]
+    #[must_use]
     pub const fn file(self) -> u8 {
         self.0 % 8
     }
 
     #[inline]
+    #[must_use]
     pub const fn file_char(self) -> char {
         (b'a' + self.file()) as char
     }
 
     #[inline]
+    #[must_use]
     pub const fn rank_char(self) -> char {
         (b'1' + self.rank()) as char
     }
@@ -153,4 +157,24 @@ impl Rank {
     pub const R6: Rank = Rank(5);
     pub const R7: Rank = Rank(6);
     pub const R8: Rank = Rank(7);
+}
+
+/// A chess piece, kings, queens, etc.
+pub struct Piece;
+impl Piece {
+    pub const KING: u8 = 0;
+    pub const QUEEN: u8 = 1;
+    pub const ROOK: u8 = 2;
+    pub const KNIGHT: u8 = 3;
+    pub const BISHOP: u8 = 4;
+    pub const PAWN: u8 = 5;
+
+    pub const ALL: [u8; 6] = [
+        Self::KING,
+        Self::QUEEN,
+        Self::ROOK,
+        Self::KNIGHT,
+        Self::BISHOP,
+        Self::PAWN,
+    ];
 }
