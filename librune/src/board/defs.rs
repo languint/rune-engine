@@ -160,7 +160,8 @@ impl Rank {
 }
 
 /// A chess piece, kings, queens, etc.
-pub struct Piece;
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub struct Piece(pub u8);
 impl Piece {
     pub const KING: u8 = 0;
     pub const QUEEN: u8 = 1;
