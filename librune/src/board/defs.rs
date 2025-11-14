@@ -203,6 +203,7 @@ impl Rank {
 
 impl TryFrom<char> for Rank {
     type Error = String;
+    #[allow(clippy::cast_possible_truncation)]
     fn try_from(value: char) -> Result<Self, Self::Error> {
         match value {
             '1'..'8' => Ok(Rank(

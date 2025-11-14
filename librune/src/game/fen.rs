@@ -1,7 +1,7 @@
 use crate::{
     board::{Board, defs::Square},
     defs::Sides,
-    game::{Game, defs::CastlingRights, gamestate::GameState},
+    game::{Game, defs::CastlingRights, game_state::GameState},
 };
 
 pub enum FenParsingError {

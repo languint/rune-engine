@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod tests {
-    use librune::game::{gamestate::GameState, history::History};
+    use librune::game::{game_state::GameState, history::History};
 
     #[test]
     fn push() {
