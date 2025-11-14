@@ -8,10 +8,10 @@ impl Sides {
 
 pub struct NrOf {}
 impl NrOf {
-    pub const FILES: u8 = 8;
-    pub const RANKS: u8 = 8;
-    pub const SQUARES: u8 = 64;
+    pub const FILES: usize = 8;
+    pub const RANKS: usize = 8;
+    pub const SQUARES: usize = 64;
 
-    pub const PIECE_TYPES: u8 = 6;
-    pub const SIDES: u8 = 2;
+    pub const PIECE_TYPES: usize = 6;
+    pub const SIDES: usize = 2;
 }
