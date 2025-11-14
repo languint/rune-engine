@@ -1,6 +1,9 @@
+pub mod bitboard;
+pub mod defs;
+
 use crate::{
     board::{bitboard::Bitboard, defs::Piece},
-    defs::NrOf,
+    defs::{NrOf, Sides},
 };
 
 /// A chess board, containing [`Bitboards`][`Bitboard`] for pieces and occupancy
@@ -18,7 +21,17 @@ impl Board {
 }
 
 impl Board {
+    /// Get the [`Bitboard`] of a [`Side`][`Sides`]
+    #[inline]
+    #[must_use]
+    pub fn occupancy_side(&self, side: u8) -> Bitboard {
+        self.bb_occupancy[side as usize]
+    }
+
+    /// Get the combined [`Bitboard`] of both sides
+    #[inline]
+    #[must_use]
     pub fn occupancy(&self) -> Bitboard {
-        self.bb_occupancy[0] | self.bb_occupancy[1]
+        self.occupancy_side(Sides::WHITE) | self.occupancy_side(Sides::BLACK)
     }
 }

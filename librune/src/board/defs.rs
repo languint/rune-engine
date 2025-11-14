@@ -1,5 +1,7 @@
 use core::fmt;
 
+use crate::board::bitboard::Bitboard;
+
 /// A square on a chess board
 ///
 /// `A1` -> `0`
@@ -114,12 +116,25 @@ impl Square {
     pub const fn rank_char(self) -> char {
         (b'1' + self.rank()) as char
     }
+
+    #[inline]
+    #[must_use]
+    pub const fn bb_mask(self) -> Bitboard {
+        Bitboard(1u64 << self.0)
+    }
 }
 
 impl From<Square> for u8 {
     #[inline]
     fn from(square: Square) -> Self {
         square.0
+    }
+}
+
+impl From<u8> for Square {
+    #[inline]
+    fn from(value: u8) -> Self {
+        Self(value)
     }
 }
 
