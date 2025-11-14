@@ -11,32 +11,32 @@ impl Bitboard {
     #[inline]
     #[must_use]
     pub fn from_square(square: Square) -> Self {
-        Bitboard(1u64 << u8::from(square))
+        Bitboard(1u64 << square.0)
     }
 
     /// Checks if a square is set in the [`Bitboard`]
     #[inline]
     #[must_use]
     pub fn is_set(self, square: Square) -> bool {
-        (self.0 & (1u64 << u8::from(square))) != 0
+        (self.0 & (1u64 << square.0)) != 0
     }
 
     /// Sets a square in the [`Bitboard`]
     #[inline]
     pub fn set(&mut self, square: Square) {
-        self.0 |= 1u64 << u8::from(square);
+        self.0 |= 1u64 << square.0;
     }
 
     /// Clears a square in the [`Bitboard`]
     #[inline]
     pub fn clear(&mut self, square: Square) {
-        self.0 &= !(1u64 << u8::from(square));
+        self.0 &= !(1u64 << square.0);
     }
 
     /// Flips a square in the [`Bitboard`]
     #[inline]
     pub fn flip(&mut self, square: Square) {
-        self.0 ^= 1u64 << u8::from(square);
+        self.0 ^= 1u64 << square.0;
     }
 
     /// Counts the number of set bits in the [`Bitboard`]
