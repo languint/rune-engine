@@ -7,6 +7,7 @@ use crate::{
 };
 
 /// A chess board, containing [`Bitboards`][`Bitboard`] for pieces and occupancy
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Board {
     pub bb_pieces: [Bitboard; NrOf::PIECE_TYPES],
     pub bb_occupancy: [Bitboard; NrOf::SIDES],

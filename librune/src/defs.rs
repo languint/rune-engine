@@ -14,4 +14,6 @@ impl NrOf {
 
     pub const PIECE_TYPES: usize = 6;
     pub const SIDES: usize = 2;
+
+    pub const MAX_HISTORY: usize = 1024;
 }

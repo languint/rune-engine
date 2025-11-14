@@ -1,14 +1,11 @@
 use core::fmt;
 
-use crate::board::bitboard::Bitboard;
-
 /// A square on a chess board
 ///
 /// `A1` -> `0`
 /// `H8` -> `63`
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Square(pub u8);
-
 impl Square {
     pub const A1: Square = Square(0);
     pub const B1: Square = Square(1);
@@ -116,11 +113,32 @@ impl Square {
     pub const fn rank_char(self) -> char {
         (b'1' + self.rank()) as char
     }
+}
 
-    #[inline]
-    #[must_use]
-    pub const fn bb_mask(self) -> Bitboard {
-        Bitboard(1u64 << self.0)
+impl TryFrom<u8> for Square {
+    type Error = String;
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        if value > 63 {
+            return Err(format!("{value} cannot be a square!"));
+        }
+
+        Ok(Self(value))
+    }
+}
+
+impl TryFrom<&str> for Square {
+    type Error = String;
+    fn try_from(value: &str) -> Result<Self, Self::Error> {
+        if value.len() != 2 {
+            return Err("String does not have 2 chars!".to_string());
+        }
+
+        let chars: Vec<char> = value.chars().collect();
+
+        let file = File::try_from(chars[0])?;
+        let rank = Rank::try_from(chars[1])?;
+
+        Square::try_from((rank.0 * 8) + file.0)
     }
 }
 
@@ -128,13 +146,6 @@ impl From<Square> for u8 {
     #[inline]
     fn from(square: Square) -> Self {
         square.0
-    }
-}
-
-impl From<u8> for Square {
-    #[inline]
-    fn from(value: u8) -> Self {
-        Self(value)
     }
 }
 
@@ -147,7 +158,6 @@ impl fmt::Display for Square {
 /// A file on the chessboard, `A`->`H`
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct File(pub u8);
-
 impl File {
     pub const A: File = File(0);
     pub const B: File = File(1);
@@ -159,10 +169,27 @@ impl File {
     pub const H: File = File(7);
 }
 
+impl TryFrom<char> for File {
+    type Error = String;
+    #[inline]
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        match value {
+            'a' => Ok(File::A),
+            'b' => Ok(File::B),
+            'c' => Ok(File::C),
+            'd' => Ok(File::D),
+            'e' => Ok(File::E),
+            'f' => Ok(File::F),
+            'g' => Ok(File::G),
+            'h' => Ok(File::H),
+            _ => Err(format!("{value} cannot be a file!")),
+        }
+    }
+}
+
 /// A rank on the chessboard, `0`->`7` (`R1=0`...`R8=7`)
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub struct Rank(pub u8);
-
 impl Rank {
     pub const R1: Rank = Rank(0);
     pub const R2: Rank = Rank(1);
@@ -172,6 +199,18 @@ impl Rank {
     pub const R6: Rank = Rank(5);
     pub const R7: Rank = Rank(6);
     pub const R8: Rank = Rank(7);
+}
+
+impl TryFrom<char> for Rank {
+    type Error = String;
+    fn try_from(value: char) -> Result<Self, Self::Error> {
+        match value {
+            '1'..'8' => Ok(Rank(
+                unsafe { value.to_digit(10).unwrap_unchecked() as u8 } - 1u8,
+            )),
+            _ => Err(format!("{value} cannot be a rank!")),
+        }
+    }
 }
 
 /// A chess piece, kings, queens, etc.
